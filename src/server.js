@@ -20,45 +20,45 @@ database.serialize(() => {
 
 
 // Uztaisa tabulas, ja tās neeksistē
-  database.run(`
-    CREATE TABLE IF NOT EXISTS japanese (
-      id INTEGER PRIMARY KEY,
-      kanji CHAR(255) NOT NULL,
-      onyomi VARCHAR(255),
-      kunyomi VARCHAR(255),
-      latValTulk VARCHAR(255),
-      checked BOOL
-    );
-  `);
-  database.run(`
-    CREATE TABLE IF NOT EXISTS english (
-      id INTEGER PRIMARY KEY,
-      word CHAR(255) NOT NULL,
-      latValTulk VARCHAR(255),
-      checked BOOL
-    );
-  `);
+database.run(`
+  CREATE TABLE IF NOT EXISTS japanese (
+    id INTEGER PRIMARY KEY,
+    kanji CHAR(255) NOT NULL,
+    onyomi VARCHAR(255),
+    kunyomi VARCHAR(255),
+    latValTulk VARCHAR(255),
+    checked BOOL
+  );
+`);
+database.run(`
+  CREATE TABLE IF NOT EXISTS english (
+    id INTEGER PRIMARY KEY,
+    word CHAR(255) NOT NULL,
+    latValTulk VARCHAR(255),
+    checked BOOL
+  );
+`);
 
   
-  // Ja nav nekādi japāņu vārdi, tos pievieno
-  database.get('SELECT * from japanese', (err, words) => {
-    if (!words) {
-      database.run(`
-        INSERT INTO japanese (kanji, onyomi, kunyomi, latValTulk, checked)
-        VALUES('ka','hito','bito','cilvēks/ persona',1), ('la','hito','lito','cilvēks/ persona',1)`
-      );
-    }
-  })
+// Ja nav nekādi japāņu vārdi, tos pievieno
+database.get('SELECT * from japanese', (err, words) => {
+  if (!words) {
+    database.run(`
+      INSERT INTO japanese (kanji, onyomi, kunyomi, latValTulk, checked)
+      VALUES('ka','hito','bito','cilvēks/ persona',1), ('la','hito','lito','cilvēks/ persona',1)`
+    );
+  }
+})
 
-    // Ja nav nekādi angļu vārdi, tos pievieno
-    database.get('SELECT * from english', (err, words) => {
-      if (!words) {
-        database.run(`
-          INSERT INTO english (word, latValTulk, checked)
-          VALUES('person','cilvēks/ persona',1), ('kool','auksts/ vēss',1)`
-        );
-      }
-    })
+// Ja nav nekādi angļu vārdi, tos pievieno
+database.get('SELECT * from english', (err, words) => {
+  if (!words) {
+    database.run(`
+      INSERT INTO english (word, latValTulk, checked)
+      VALUES('person','cilvēks/ persona',1), ('kool','auksts/ vēss',1)`
+    );
+  }
+})
 
 
 });
@@ -139,7 +139,49 @@ app.post('/english', (req, res) => {
 
 
 
-app.delete('/english', (req, res) =>{
+// app.delete('/english', (req, res) =>{
+
+//   database.run(`
+//   DELETE FROM english WHERE id=${req.body.id}
+//   `, () => {
+    
+//     res.json(`Vārds izdzēsts veiksmīgi  ${req.body.id}` )
+//   })
+// })
+
+
+app.delete('/english', (req, res, next) => {
+  const id = req.body;
+  console.log('1answer',req.body.id)
+  console.log('2answer',res.body.id)
+  database.run('DELETE FROM english WHERE id = ?', id, (err) => {
+    if (err) {
+      res.status(500).json({ message: 'An error occurred while deleting the word.' });
+    } else {
+      res.status(200).json({ message: 'Word deleted successfully.' });
+    }
+  });
+});
+
+
+// const handleDelete = (word) => {
+//   console.log(word);
+//   db.run(`DELETE FROM english WHERE word = ?`, word, (error) => {
+//     if (error) {
+//       console.error(error);
+//       alert("An error occurred while deleting the word. Please try again later.");
+//     } else {
+//       alert("Word deleted successfully.");
+//       fetchAllWords();
+//     }
+//   });
+// };
+
+
+
+
+
+app.delete('/japanese', (req, res) =>{
   console.log('1answer',req.body.id)
   console.log('2answer',res.body.id)
   database.run(`
@@ -149,9 +191,6 @@ app.delete('/english', (req, res) =>{
     res.json(`Vārds izdzēsts veiksmīgi  ${req.body.id}` )
   })
 })
-
-
-
 
 
 
