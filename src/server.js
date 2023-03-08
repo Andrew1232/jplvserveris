@@ -59,25 +59,11 @@ database.get('SELECT * from english', (err, words) => {
     );
   }
 })
-
-
 });
-
-
-
-
-
 
 
 // controlieris kurš atbild par to, kad tiks prasīts GET piepeasījums uz root, 
 // jeb šajā gadījumā http://localhost:3004/
-
-
-
-
-
-
-
 app.get('/', (req, res) => {
   // izvēlamies visus datus no japanese
   database.all(`SELECT * FROM japanese`, (err, word) => {
@@ -86,9 +72,6 @@ app.get('/', (req, res) => {
     })
   })
 })
-
-
-
 // Atgriež visus japāņu vārdus no DB
 app.get('/japanese', (req, res) => {
   database.all('SELECT * FROM japanese', (error, words) => {
@@ -102,11 +85,6 @@ app.get('/english', (req, res) => {
     res.json(words)
   })
 })
-
-
-
-
-
 // Pievieno jaunu vārdu japāņu valodā
 app.post('/japanese', (req, res) => {
   database.run(`
@@ -121,11 +99,7 @@ app.post('/japanese', (req, res) => {
   });
 });
 
-
-
-
 app.post('/english', (req, res) => {
-
   database.run(`
   INSERT INTO english (word, latValTulk,checked)
   VALUES("${req.body.word}",
@@ -137,71 +111,22 @@ app.post('/english', (req, res) => {
 });
 
 
-
-
-// app.delete('/english', (req, res) =>{
-
-//   database.run(`
-//   DELETE FROM english WHERE id=${req.body.id}
-//   `, () => {
-    
-//     res.json(`Vārds izdzēsts veiksmīgi  ${req.body.id}` )
-//   })
-// })
-
-
-app.delete('/english', (req, res, next) => {
-  const id = req.body;
-  console.log('1answer',req.body.id)
-  console.log('2answer',res.body.id)
-  database.run('DELETE FROM english WHERE id = ?', id, (err) => {
-    if (err) {
-      res.status(500).json({ message: 'An error occurred while deleting the word.' });
-    } else {
-      res.status(200).json({ message: 'Word deleted successfully.' });
-    }
-  });
-});
-
-
-// const handleDelete = (word) => {
-//   console.log(word);
-//   db.run(`DELETE FROM english WHERE word = ?`, word, (error) => {
-//     if (error) {
-//       console.error(error);
-//       alert("An error occurred while deleting the word. Please try again later.");
-//     } else {
-//       alert("Word deleted successfully.");
-//       fetchAllWords();
-//     }
-//   });
-// };
-
-
-
-
-
-app.delete('/japanese', (req, res) =>{
-  console.log('1answer',req.body.id)
-  console.log('2answer',res.body.id)
-  database.run(`
-  DELETE FROM english WHERE id=${req.body.id}
-  `, () => {
-    
-    res.json(`Vārds izdzēsts veiksmīgi  ${req.body.id}` )
+app.delete('/english/:id', (req, res) => {
+  database.run(`DELETE FROM english WHERE id = ${req.params.id}`, () => {   
+    res.json('Projekts dzests!')
   })
 })
-
-
-
-
+app.delete('/japanese/:id', (req, res) => {
+  database.run(`DELETE FROM japanese WHERE id = ${req.params.id}`, () => {   
+    res.json('Projekts dzests!')
+  })
+})
 
 
 // palaižam serveri ar 3004 portu
 app.listen(3004, () => {
   console.log(`Example app listening on port 3004`)
 })
-
 
 // GET http://localhost:3004/autors
 
