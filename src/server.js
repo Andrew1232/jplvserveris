@@ -2,6 +2,9 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const sqlite3 = require('sqlite3').verbose();
+
+
+
 // pieslēdzamies mūsu DB
 const database = new sqlite3.Database("./src/db/database.db");
 // inicializējam express appu
@@ -45,7 +48,8 @@ database.get('SELECT * from japanese', (err, words) => {
   if (!words) {
     database.run(`
       INSERT INTO japanese (kanji, onyomi, kunyomi, latValTulk, checked)
-      VALUES('ka','hito','bito','cilvēks/ persona',1), ('la','hito','lito','cilvēks/ persona',1)`
+      VALUES('U2FsdGVkX1/WATqBP94OVTkwdFPl+Z9cCV68S4NHtoE=','U2FsdGVkX18vcKAgmyhVhE9aPBItmosuUt4yBfUwI98lGati55sUpj3n1IM+wwqW','U2FsdGVkX1/4NPAysDnnTLjqcop6YlIJh+vTwPSzexY4clcioy08tn5Rlbwq2oh3','U2FsdGVkX1/pJKpWvOZxSQRuQTO85ALQ7srxBtXEoiPY8p/bqhuhn5UdnVDUUDiZ',1), 
+      ('U2FsdGVkX18pFeGHAW4YGyYemsbk9QPSs9psjCuD2XY=','U2FsdGVkX18AjmhvEMtNrLlphSC9UFOHy4GnJMURdso=','U2FsdGVkX1/RZF6T+Z7CN7Fyc7huDESbv7oTcIGWBiY=','U2FsdGVkX1/BHXpp56kk1kwltGKYiNXkhKYZK3Jn84LvpnIB8eCIvhEBYCN4fiHv',1)`
     );
   }
 })
@@ -55,7 +59,8 @@ database.get('SELECT * from english', (err, words) => {
   if (!words) {
     database.run(`
       INSERT INTO english (word, latValTulk, checked)
-      VALUES('person','cilvēks/ persona',1), ('kool','auksts/ vēss',1)`
+      VALUES('U2FsdGVkX18znmXxfazRtjyrJfuFeYrqFA5oY8DDuUE=','U2FsdGVkX1+cnBUfeYGfYf6NIdptAzjhUWUK4ye5wz0I0kCOto+zRsXaSxcn1+eO',1), 
+      ('U2FsdGVkX19hv3fHMDEtem0oA4QdWWniwVeXWYBQdCc=','U2FsdGVkX19Brk+C54WIStnOf+Ne46txjXN22wYuKEI=',1)`
     );
   }
 })
@@ -90,8 +95,8 @@ app.post('/japanese', (req, res) => {
   database.run(`
   INSERT INTO japanese (kanji, onyomi, kunyomi, latValTulk, checked)
   VALUES("${req.body.kanji}",
-  '${req.body.kunyomi}',
   '${req.body.onyomi}',
+  '${req.body.kunyomi}',
   '${req.body.latValTulk}',
   1);
   `, () => {
